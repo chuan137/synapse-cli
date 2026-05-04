@@ -17,3 +17,8 @@ dependencies = [
 [project.scripts]
 synapse            = "synapse.cli:cli"
 synapse-mcp-server = "synapse.mcp_server:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
