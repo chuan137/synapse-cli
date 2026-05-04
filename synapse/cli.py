@@ -99,7 +99,8 @@ def cli():
     help="Agent roles description written into CLAUDE.md (replaces {{AGENT_ROLES}}).",
 )
 @click.option("--port", default=8765, show_default=True, help="Port for S-Deck dashboard.")
-def init(roles: str, port: int) -> None:
+@click.option("--extra", default="", help="Extra instructions appended to CLAUDE.md for all agents.")
+def init(roles: str, port: int, extra: str) -> None:
     """Initialize Synapse in the current project directory."""
     project_root = Path.cwd()
     synapse_dir = project_root / ".synapse"
@@ -118,6 +119,7 @@ def init(roles: str, port: int) -> None:
         "agent_ids": ["agent_a", "agent_b"],
         "workflow": "",
         "agent_roles_description": roles,
+        "extra_instructions": extra,
     }
     (synapse_dir / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
 
@@ -126,7 +128,7 @@ def init(roles: str, port: int) -> None:
         .joinpath("CLAUDE.project.md")
         .read_text(encoding="utf-8")
     )
-    rendered = Template(template_text).render(AGENT_ROLES=roles)
+    rendered = Template(template_text).render(AGENT_ROLES=roles, EXTRA_INSTRUCTIONS=extra)
     (project_root / "CLAUDE.md").write_text(rendered, encoding="utf-8")
 
     subprocess.run(
